@@ -1,2 +1,3 @@
+include 'service'
 include 'service:ping'
 include 'service:users'
