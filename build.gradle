@@ -37,6 +37,7 @@ task codeCoverageReport(type: JacocoReport) {
     reports {
         html.enabled = false
         xml.enabled = true
+        xml.destination "${buildDir}/reports/jacoco/report.xml"
         csv.enabled = false
     }
 
