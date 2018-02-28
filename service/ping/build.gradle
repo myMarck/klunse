@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.9.RELEASE'
+        springBootVersion = '1.5.10.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -10,9 +10,14 @@ buildscript {
     }
 }
 
-apply plugin: 'idea'
-apply plugin: 'eclipse'
+plugins {
+    id 'idea'
+    id 'eclipse'
+    id 'com.palantir.docker' version '0.19.2'
+}
+
 apply plugin: 'org.springframework.boot'
+
 
 jar {
     version = '0.0.1-SNAPSHOT'
@@ -26,4 +31,10 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+docker {
+    name "${project.group}/${jar.baseName}"
+    files jar.archivePath
+    buildArgs(['JAR_FILE': "${jar.archiveName}"])
 }
