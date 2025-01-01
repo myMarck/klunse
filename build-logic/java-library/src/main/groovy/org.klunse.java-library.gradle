@@ -1,0 +1,4 @@
+plugins {
+    id('org.klunse.commons')
+    id('java-library')
+}

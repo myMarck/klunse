@@ -1,0 +1,6 @@
+plugins {
+    id('org.klunse.report-aggregation')
+}
+
+dependencies {
+}

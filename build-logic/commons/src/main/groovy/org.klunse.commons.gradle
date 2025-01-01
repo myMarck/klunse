@@ -1,0 +1,24 @@
+plugins {
+    id('java')
+    id('org.klunse.jacoco')
+}
+
+group = 'org.klunse.thegame'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(23)
+    }
+}
+
+dependencies {
+    implementation(platform('org.klunse.platform:product-platform'))
+
+    testImplementation(platform('org.klunse.platform:test-platform'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
+}

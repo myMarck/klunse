@@ -1,0 +1,9 @@
+plugins {
+    id('org.klunse.spring-boot-application')
+}
+
+group = "${group}.server-application"
+
+dependencies {
+    implementation('org.apache.juneau:juneau-marshall')
+}

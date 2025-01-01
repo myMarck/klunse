@@ -1,0 +1,11 @@
+plugins {
+    id('java-platform')
+}
+
+group = 'org.klunse.platform'
+
+javaPlatform.allowDependencies()
+
+dependencies {
+    api(platform('org.junit:junit-bom:5.11.4'))
+}

@@ -1,3 +1,6 @@
-include 'service'
-include 'service:ping'
-include 'service:users'
+includeBuild('platforms')
+includeBuild('build-logic')
+
+includeBuild('aggregation')
+
+includeBuild('server-applications')
