@@ -1,7 +1,7 @@
 package org.klunse.thegame.ping;
 
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PingController {
@@ -10,5 +10,4 @@ public class PingController {
     public String index() {
         return "Ping!";
     }
-    
 }
