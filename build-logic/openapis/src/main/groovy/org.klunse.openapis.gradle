@@ -1,7 +1,0 @@
-plugins {
-    id('org.openapi.generator')
-}
-
-openApiValidate {
-    inputSpec = "${projectDir}/src/main/resources/openapi.yaml".toString()
-}
