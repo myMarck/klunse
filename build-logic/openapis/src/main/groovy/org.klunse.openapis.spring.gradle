@@ -1,0 +1,59 @@
+plugins {
+    id('org.klunse.java-shared')
+    id('org.openapi.generator')
+    id('org.springframework.boot')
+}
+
+def openapisSrcDir = "../../openapis/${project.name}/src/main/resources"
+def openapisOutputDir = "${buildDir}/generated"
+
+sourceSets {
+    main {
+        java {
+            srcDirs += [ "${openapisOutputDir}/src/main/java" ]
+        }
+        resources {
+            srcDirs += [ openapisSrcDir ]
+        }
+    }
+}
+
+openApiGenerate {
+    skipValidateSpec = true
+
+    File gameManagerSpec = file("${openapisSrcDir}/openapi.yaml")
+
+    generatorName = "spring"
+    configFile = "${projectDir}/src/main/resources/config.json"
+    inputSpec = gameManagerSpec.absolutePath
+    outputDir = openapisOutputDir
+    configOptions = [
+            dateLibrary: "java8",
+            documentationProvider: "none",
+            openApiNullable: "false",
+            disallowAdditionalPropertiesIfNotPresent: "false",
+            delegatePattern: "true",
+            useSpringBoot3: "true",
+    ]
+}
+
+compileJava {
+    dependsOn tasks.openApiGenerate
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.spring.io/milestone')
+    }
+
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.springframework.data:spring-data-commons'
+}

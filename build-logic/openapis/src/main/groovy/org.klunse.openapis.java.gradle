@@ -1,0 +1,42 @@
+plugins {
+    id('org.klunse.java-shared')
+    id('org.openapi.generator')
+}
+
+def openapisSrcDir = "../../openapis/${project.name}/src/main/resources"
+def openapisOutputDir = "${buildDir}/generated"
+
+sourceSets {
+    main {
+        java {
+            srcDirs += [ "${openapisOutputDir}/src/main/java" ]
+        }
+        resources {
+            srcDirs += [ openapisSrcDir ]
+        }
+    }
+}
+
+openApiGenerate {
+    skipValidateSpec = true
+
+    File gameManagerSpec = file("${openapisSrcDir}/openapi.yaml")
+
+    generatorName = "java"
+    configFile = "${projectDir}/src/main/resources/config.json"
+    inputSpec = gameManagerSpec.absolutePath
+    outputDir = openapisOutputDir
+    configOptions = [
+            dateLibrary: "java8",
+            documentationProvider: "none",
+            library: "native",
+            openApiNullable: "false",
+            hideGenerationTimestamp: "true",
+            useJakartaEe: "true",
+            disallowAdditionalPropertiesIfNotPresent: "false",
+    ]
+}
+
+compileJava {
+    dependsOn tasks.openApiGenerate
+}
