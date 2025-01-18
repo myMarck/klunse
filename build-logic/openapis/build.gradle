@@ -1,0 +1,11 @@
+plugins {
+    id('groovy-gradle-plugin')
+}
+
+dependencies {
+    implementation(platform('org.klunse.platform:plugins'))
+    implementation(project(':java-library'))
+
+    implementation('org.openapitools:openapi-generator-gradle-plugin')
+    implementation('org.springframework.boot:org.springframework.boot.gradle.plugin')
+}

@@ -7,5 +7,6 @@ group = 'org.klunse.platform'
 dependencies {
     constraints {
         api('org.springframework.boot:org.springframework.boot.gradle.plugin:3.4.1')
+        api('org.openapitools:openapi-generator-gradle-plugin:7.10.0')
     }
 }
