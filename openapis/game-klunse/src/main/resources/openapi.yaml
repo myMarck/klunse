@@ -1,0 +1,609 @@
+openapi: 3.1.0
+info:
+  description: API to find and play the klunse game.
+  title: Klunse game API
+  license:
+    name: Apache-2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 1.0.0
+externalDocs:
+  description: Find out more about the great game of klunse.
+  url: https://klunse.odumsborg.dk
+servers:
+  - url: https://api.klunse.odumsborg.dk/v1
+    description: Production server (uses live data)
+  - url: https://api-test.klunse.odumsborg.dk/v1
+    description: Test server (uses test data)
+paths:
+  /games:
+    post:
+      tags:
+        - Lobby
+      summary: Create a new game.
+      operationId: createGame
+      requestBody:
+        description: Create a new game.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGameMetaData'
+        required: true
+      responses:
+        301:
+          description: Uri of the new game.
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+    get:
+      tags:
+        - Lobby
+      summary: List games that are looking for players.
+      operationId: getOpenGames
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/sort_by'
+        - $ref: '#/components/parameters/sort_direction'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OpenGame'
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/totalCount'
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+  /games/{gameId}:
+    get:
+      tags:
+        - Lobby
+      summary: Find a game by ID.
+      description: Returns details of a game.
+      operationId: getGameById
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game to return.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/GameId'
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+    delete:
+      tags:
+        - Lobby
+      summary: Delete a game
+      description: Delete game if state is not active.
+      operationId: deleteGame
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game to return.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/GameId'
+      responses:
+        200:
+          description: Successful operation.
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+  /games/{gameId}/state:
+    post:
+      tags:
+        - Gamestate
+      summary: Change the gamestate.
+      operationId: changeState
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game to return.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/GameId'
+        - name: state
+          in: query
+          description: The new state of the game.
+          required: true
+          schema:
+            $ref: '#/components/schemas/GameState'
+      responses:
+        200:
+          description: Game state changed.
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+    get:
+      tags:
+        - Gamestate
+      summary: Get the current game state.
+      operationId: getGameState
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/GameId'
+      responses:
+        200:
+          description: The current state of the game.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameState'
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+  /games/{gameId}/players:
+    get:
+      tags:
+        - Players
+      summary: Get the players in the game.
+      operationId: getPlayers
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/GameId'
+      responses:
+        200:
+          description: The players in the game.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Player'
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+    post:
+      tags:
+        - Players
+      summary: Add a player to the game.
+      operationId: addPlayer
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/GameId'
+        - name: player
+          in: query
+          description: The player to add.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The player was added to the game.
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+    delete:
+      tags:
+        - Players
+      summary: Remove a player from the game.
+      operationId: removePlayer
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/GameId'
+        - name: player
+          in: query
+          description: The player to remove.
+          required: true
+          schema:
+            $ref: '#/components/schemas/PlayerId'
+      responses:
+        200:
+          description: The player was removed from the game.
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+  /games/{gameId}/rounds:
+    get:
+      tags:
+        - Rounds
+      summary: Get the rounds in the game.
+      operationId: getRounds
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/GameId'
+        - name: state
+          in: query
+          description: The state of the round.
+          required: false
+          schema:
+            $ref: '#/components/schemas/RoundState'
+      responses:
+        200:
+          description: The rounds in the game.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Round'
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+  /games/{gameId}/rounds/{roundId}:
+    patch:
+      tags:
+        - Rounds
+      summary: Add guess to round.
+      operationId: addGuess
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/GameId'
+        - name: roundId
+          in: path
+          description: ID of round.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/RoundId'
+        - name: player
+          in: query
+          description: The player that made the guess.
+          required: true
+          schema:
+            $ref: '#/components/schemas/PlayerId'
+        - name: guess
+          in: query
+          description: the guess
+          required: true
+          schema:
+            $ref: '#/components/schemas/Guess'
+      responses:
+        200:
+          description: The guess was added to the round.
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+  /games/{gameId}/rounds/{roundId}/guesses:
+    get:
+      tags:
+        - Rounds
+      summary: Get the guesses in the round.
+      operationId: getGuesses
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/GameId'
+        - name: roundId
+          in: path
+          description: ID of round.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/RoundId'
+      responses:
+        200:
+          description: The guesses in the round.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Guess'
+        default:
+          description: The request has failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      x-accepts: application/json
+      x-contentType: application/json
+components:
+  parameters:
+    page:
+      name: pagination
+      description: Pageable number for the search.
+      required: false
+      in: query
+      schema:
+        type: integer
+    size:
+      name: size
+      description: Element count for each page.
+      required: false
+      in: query
+      schema:
+        type: integer
+    sort_by:
+      name: sort
+      description: List of elements to sort by.
+      required: false
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+    sort_direction:
+      name: direction
+      description: Ascending  or descending search result order.
+      in: query
+      schema:
+        $ref: '#/components/schemas/SortDirection'
+  headers:
+    totalCount:
+      description: Total number of results.
+      schema:
+        type: integer
+  schemas:
+    RoundId:
+      description: The ID of a round.
+      type: string
+      format: uuid
+    PlayerId:
+      description: The ID of a player.
+      type: string
+      format: uuid
+    GameId:
+      description: The ID of a game.
+      type: string
+      format: uuid
+    Problem:
+      type: object
+      description: An HTTP Problem Details object, as defined in IETF RFC 7807 (https://tools.ietf.org/html/rfc7807).
+      required:
+        - type
+        - title
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+    Error:
+      type: object
+      description: An error object.
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    SortDirection:
+      type: string
+      enum:
+        - ASC
+        - DESC
+    CreateGameMetaData:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 64
+        autofillGame:
+          type: string
+          enum:
+            - allRobots
+            - noRobots
+        playerCount:
+          type: integer
+          minimum: 2
+          maximum: 4
+    OpenGame:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 64
+        players:
+          type: array
+          description: List of players that have joined the game
+          items:
+            type: string
+    GameState:
+      type: string
+      enum:
+        - open
+        - ongoing
+        - finish
+    RoundState:
+      type: string
+      enum:
+        - ongoing
+        - finish
+    Round:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/RoundState'
+    Game:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: Description of the game
+    Player:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: Player name
+    Guess:
+      type: object
+      properties:
+        player:
+          type: string
+          description: Player name
+        guess:
+          type: integer
+          description: Guess
+  requestBodies:
+    Game:
+      description: Game of klunse object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Game'
+      required: true

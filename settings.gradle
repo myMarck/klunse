@@ -2,5 +2,6 @@ includeBuild('platforms')
 includeBuild('build-logic')
 
 includeBuild('aggregation')
+includeBuild('openapis')
 
 includeBuild('server-applications')

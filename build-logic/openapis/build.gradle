@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(platform('org.klunse.platform:plugins'))
+    implementation(platform('org.klunse.platform:plugins-platform'))
     implementation(project(':java-library'))
 
     implementation('org.openapitools:openapi-generator-gradle-plugin')
