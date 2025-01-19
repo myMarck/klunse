@@ -1,5 +1,5 @@
 plugins {
-    id('org.klunse.java-shared')
+    id('org.klunse.java-library')
     id('org.openapi.generator')
     id('org.springframework.boot')
 }

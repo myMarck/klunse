@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.3
 info:
   description: API to find and play the klunse game.
   title: Klunse game API
